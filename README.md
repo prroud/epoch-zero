@@ -52,4 +52,17 @@ Instead of reading books cover-to-cover, I use their Tables of Contents as a syl
 **Phase 3 Project Ideas:**
 - TODO
 
+---
 
+## Phase 4: AI Engineering & MLOps
+**Primary References:** *AI Engineering (Chip Huyen) & Applied ML (Jeff Prosise)*
+
+*   [ ] Model Evaluation and Metrics for GenAI
+*   [ ] Latency, Throughput, and Cost Optimization
+*   [ ] Serving Models (FastAPI, ONNX, TensorRT)
+*   [ ] Monitoring (Data Drift, Concept Drift, Hallucination detection)
+
+**Phase 4 Project Ideas:**
+- TODO
+
+---
