@@ -27,4 +27,17 @@ Instead of reading books cover-to-cover, I use their Tables of Contents as a syl
 
 ---
 
+## Phase 2: The Transformer Era & NLP
+**Primary Reference:** *Hands-On Large Language Models (Jay Alammar)*
+
+*   [ ] Word Embeddings and Vector Databases
+*   [ ] The Transformer Architecture (Attention Mechanisms)
+*   [ ] Prompt Engineering & OpenAI/Open-Source APIs
+*   [ ] Retrieval-Augmented Generation (RAG)
+*   [ ] Parameter-Efficient Fine-Tuning (PEFT, LoRA)
+
+**Phase 2 Project Ideas:**
+- TODO
+
+---
 
