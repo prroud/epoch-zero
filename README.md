@@ -29,6 +29,7 @@ Since I am focusing on **PyTorch** instead of TensorFlow/Keras, the codebase wil
 
 **NLP & RAG (Retrieval-Augmented Generation):**
 * `langchain` or `llama-index` - Orchestrating RAG pipelines and LLM agents.
+* `langgraph` - Building stateful, cyclic, and multi-agent AI systems (e.g., when the LLM needs to loop, reflect, or correct its own errors).
 * `chromadb`, `faiss-cpu`, or `qdrant-client` - Vector databases for semantic search.
 
 **AI Engineering & Deployment:**
