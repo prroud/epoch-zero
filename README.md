@@ -41,3 +41,15 @@ Instead of reading books cover-to-cover, I use their Tables of Contents as a syl
 
 ---
 
+## Phase 3: Diffusion Models & Advanced Vision
+**Primary Reference:** *Hands on Generative AI with Transformers and Diffusion Models (Jay Alammar)*
+
+*   [ ] Forward and Reverse Diffusion Processes
+*   [ ] Stable Diffusion Architecture (U-Net, Text Encoders)
+*   [ ] Conditioning and ControlNet
+*   [ ] Vision Transformers (ViT)
+
+**Phase 3 Project Ideas:**
+- TODO
+
+
