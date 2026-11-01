@@ -13,6 +13,36 @@ Instead of reading books cover-to-cover, I use their Tables of Contents as a syl
 6. **Deep Learning** (Goodfellow, Bengio, Courville) - *The "Math Bible" (Strictly for theoretical/mathematical reference)*
 
 ---
+## Tech Stack & Libraries (PyTorch Ecosystem)
+
+Since I am focusing on **PyTorch** instead of TensorFlow/Keras, the codebase will heavily rely on the PyTorch ecosystem and Hugging Face tools.
+
+**Core Deep Learning:**
+* `torch`, `torchvision`, `torchaudio` - Core model building, training loops, and computer vision utilities.
+* `accelerate` - For distributed training and handling multi-GPU/MPS (Apple Silicon) setups easily.
+
+**Generative AI & Transformers (Hugging Face):**
+* `transformers` - Loading and running LLMs and ViTs.
+* `diffusers` - Building and running diffusion models (Stable Diffusion).
+* `peft` & `trl` - Parameter-Efficient Fine-Tuning (LoRA) and RLHF.
+* `datasets` & `evaluate` - Handling training data and evaluating model metrics.
+
+**NLP & RAG (Retrieval-Augmented Generation):**
+* `langchain` or `llama-index` - Orchestrating RAG pipelines and LLM agents.
+* `chromadb`, `faiss-cpu`, or `qdrant-client` - Vector databases for semantic search.
+
+**AI Engineering & Deployment:**
+* `fastapi` & `uvicorn` - Serving models via high-performance REST APIs.
+* `streamlit` or `gradio` - Building quick web UIs for model demos.
+* `wandb` (Weights & Biases) - Tracking experiments, losses, and generated images.
+
+**Data Manipulation & Utilities:**
+* `numpy`, `pandas`, `scikit-learn` - Data preprocessing, metrics, and basic ML tasks.
+* `matplotlib` & `seaborn` - Visualizing latent spaces, loss curves, and generated outputs.
+
+---
+
+---
 
 ## Phase 1: Generative Foundations (Current Stage)
 **Primary Reference:** *Generative Deep Learning (David Foster)*
