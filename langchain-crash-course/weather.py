@@ -59,17 +59,30 @@ def locate_user(runtime: ToolRuntime[Context]):
             return 'Unknown'
 
 
+model = init_chat_model(
+    'google_genai:gemma-4-31b-it',
+    temperature=0.3)
+
+checkpointer = InMemorySaver()
+
+
 agent = create_agent(
-    model = 'google_genai:gemma-4-31b-it',
-    tools = [get_weather],
-    system_prompt='You are a helpful weather assistant, who always cracks jokes and is humorous while remaining helpful'
+    model = model,
+    tools = [get_weather, locate_user],
+    system_prompt='You are a helpful weather assistant, who always cracks jokes and is humorous while remaining helpful',
+    context_schema=Context,
+    response_format=ResponseFormat,
+    checkpointer=checkpointer
 )
+
+config = {'configurable': {'thread_id': 1}}
 
 response = agent.invoke({
     'messages':[
-        {'role': 'user', 'content': 'What is the weather like in Krakow?'}
-    ]
-})
+        {'role': 'user', 'content': 'What is the weather like in Krakow?'}]},
+        config=config,
+        context=Context(user_id='ABC123')
+)
 
-print(response)
-print(response['messages'][-1].content)
+print(response['structured_response'])
+print(response['structured_response'].summary)
