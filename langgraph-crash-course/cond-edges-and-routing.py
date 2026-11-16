@@ -24,7 +24,7 @@ class IntentClassifier(BaseModel):
 
 class State(TypedDict):
     messages = Annotated[list, add_messages]
-    message_intent = str | None
+    message_intent: str | None
 
 
 def classify_intent(state: State):
@@ -32,7 +32,7 @@ def classify_intent(state: State):
     result = structured_llm.invoke([
         {'role':'system',
          'content':'Determine whether user wants to chat, retrieve or code.'},
-        {'role': 'user', 'content': state.messages[-1].content}
+        {'role': 'user', 'content': state['messages'][-1].content}
     ])
 
     return {'message_intent': result.message_intent}
