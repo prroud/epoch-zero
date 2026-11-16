@@ -23,7 +23,7 @@ class IntentClassifier(BaseModel):
 
 
 class State(TypedDict):
-    messages = Annotated[list, add_messages]
+    messages: Annotated[list, add_messages]
     message_intent: str | None
 
 
