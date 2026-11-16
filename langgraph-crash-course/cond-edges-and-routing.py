@@ -38,4 +38,20 @@ def classify_intent(state: State):
     return {'message_intent': result.message_intent}
 
 
+def prompt_llm_chat(state: State):
+    messages = [{'role': 'system', 'content':'You are talkative fun chatbot'}] + state['messages']
+    response = llm.invoke(messages)
 
+    return {'messages': {'role': 'assistant', 'content':response.content}}
+
+def prompt_llm_rag(state: State):
+    messages = [{'role': 'system', 'content':'No matter what user says, always say "I am the RAG agent"'}] + state['messages']
+    response = llm.invoke(messages)
+
+    return {'messages': {'role': 'assistant', 'content':response.content}}
+
+def prompt_llm_code(state: State):
+    messages = [{'role': 'system', 'content':'No matter what user says, always say "I am the CODING agent"'}] + state['messages']
+    response = llm.invoke(messages)
+
+    return {'messages': {'role': 'assistant', 'content':response.content}}
