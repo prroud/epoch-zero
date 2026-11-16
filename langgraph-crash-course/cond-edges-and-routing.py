@@ -77,10 +77,10 @@ def prompt_llm_rag(state: State):
 
 def prompt_llm_code(state: State):
     user_prompt = state['messages'][-1].content
-    workspace = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'workspace')[cite: 3]
+    workspace = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'workspace')
 
     result = subprocess.run(
-        ['codex', 'exec', '--full-auto', user_prompt],
+        ['claude', '-p', user_prompt, '--permission-mode', 'acceptEdits'],
         cwd=workspace,
         capture_output=True,
         text=True
