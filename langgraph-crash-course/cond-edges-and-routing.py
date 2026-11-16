@@ -1,4 +1,6 @@
+import os
 import uuid
+import subprocess
 from typing import TypedDict, Annotated, Literal
 from dotenv import load_dotenv
 
@@ -74,10 +76,19 @@ def prompt_llm_rag(state: State):
     return {'messages': {'role': 'assistant', 'content':response.content}}
 
 def prompt_llm_code(state: State):
-    messages = [{'role': 'system', 'content':'No matter what user says, always say "I am the CODING agent"'}] + state['messages']
-    response = llm.invoke(messages)
+    user_prompt = state['messages'][-1].content
+    workspace = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'workspace')[cite: 3]
 
-    return {'messages': {'role': 'assistant', 'content':response.content}}
+    result = subprocess.run(
+        ['codex', 'exec', '--full-auto', user_prompt],
+        cwd=workspace,
+        capture_output=True,
+        text=True
+    )
+
+    output = result.stdout.strip() or result.stderr.strip()
+
+    return {'messages': [{'role': 'assistant', 'content': output}]}
 
 
 graph_builder = StateGraph(State)
