@@ -5,6 +5,9 @@ from dotenv import load_dotenv
 from pydantic import BaseModel, Field
 
 from langchain.chat_models import init_chat_model
+from langchain_core.vectorstores import InMemoryVectorStore
+from langchain_core.documents import Document
+from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from langgraph.graph import MessagesState, StateGraph, START, END
 from langgraph.graph.message import add_messages
 from langgraph.checkpoint.memory import InMemorySaver
@@ -12,6 +15,18 @@ from langgraph.checkpoint.memory import InMemorySaver
 load_dotenv()
 
 llm = init_chat_model('google_genai:gemma-4-31b-it')
+
+
+KNOWLEDGE = [
+    "NeuralNine is a YouTube channel focused on programming, AI, and software engineering tutorials.",
+    "LangGraph is a library for building stateful, multi-agent applications on top of LangChain.",
+    "A StateGraph in LangGraph defines nodes and edges that operate on a shared typed state.",
+    "Checkpointers like InMemorySaver let LangGraph persist conversation state across invocations using a thread_id.",
+    "RAG (Retrieval-Augmented Generation) combines a retriever over a knowledge base with an LLM to ground answers in source documents.",
+]
+
+vector_store = InMemoryVectorStore(GoogleGenerativeAIEmbeddings(model='models/gemini-embedding-001'))
+vector_store.add_documents([Document(page_content=text) for text in KNOWLEDGE])
 
 
 class IntentClassifier(BaseModel):
@@ -45,7 +60,15 @@ def prompt_llm_chat(state: State):
     return {'messages': {'role': 'assistant', 'content':response.content}}
 
 def prompt_llm_rag(state: State):
-    messages = [{'role': 'system', 'content':'No matter what user says, always say "I am the RAG agent"'}] + state['messages']
+    query = state['messages'][-1].content
+    documents = vector_store.similarity_search(query, k=3)
+
+    context = '\n'.join(f'- {doc.page_content}' for doc in documents)
+
+    messages = [
+    {'role': 'system', 'content': f'You are a RAG agent. Answer the user using only the context below. If the answer is not in it, say you don\'t know.\n\nContext:\n{context}'},
+    ] + state['messages']
+
     response = llm.invoke(messages)
 
     return {'messages': {'role': 'assistant', 'content':response.content}}
