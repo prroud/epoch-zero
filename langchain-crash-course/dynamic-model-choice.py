@@ -6,7 +6,7 @@ from langchain.chat_models import init_chat_model
 from langchain.agents.middleware import ModelRequest, ModelResponse, wrap_model_call
 from langchain.messages import SystemMessage, HumanMessage, AIMessage
 
-load_dotenv
+load_dotenv()
 
 basic_model = init_chat_model(model='gpt-4o-mini')
 advanced_model = init_chat_model(model='gpt-4.1-mini')
