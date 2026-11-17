@@ -65,12 +65,12 @@ def accept_coding(state: State):
     text = str(decision).strip().lower()
 
     if text in ['y', 'yes', 'approve', 'ok']:
-        return {}
+        return {'next_node': 'coding_agent'}
 
     if text in ['n', 'no', 'deny', 'cancel']:
         return {'messages': [{'role': 'assistant', 'content':'Request denies by the user.'}], 'next_node': 'denied'}
 
-    return {'messages': [{'role':'user', 'content': text}]}
+    return {'messages': [{'role':'user', 'content': text}], 'next_node':'accept_coding'}
 
 
 def prompt_llm_chat(state: State):
@@ -118,7 +118,7 @@ graph_builder.add_node('coding_agent', prompt_llm_code)
 graph_builder.add_node('accept_coding', accept_coding)
 
 graph_builder.add_edge(START, 'classifier')
-graph_builder.add_conditional_edges('accept_coding', lambda state: 'end' if state.get('next_node') == 'denied' else 'coding_agent')
+graph_builder.add_conditional_edges('accept_coding', lambda state: 'end' if state.get('next_node') == 'denied' else state['next_node'], {'end': END, 'coding_agent': 'coding_agent', 'accept_coding':'accept_coding'})
 graph_builder.add_conditional_edges('classifier',
                                     lambda state: state['message_intent'], {'chat': 'chat_agent', 'knowledge': 'rag_agent', 'code':'accept_coding'})
 
