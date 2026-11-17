@@ -13,6 +13,7 @@ from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from langgraph.graph import MessagesState, StateGraph, START, END
 from langgraph.graph.message import add_messages
 from langgraph.checkpoint.memory import InMemorySaver
+from langgraph.types import interrupt, Command
 
 load_dotenv()
 
@@ -43,6 +44,8 @@ class State(TypedDict):
     messages: Annotated[list, add_messages]
     message_intent: str | None
 
+    next_node: str | None
+
 
 def classify_intent(state: State):
     structured_llm = llm.with_structured_output(IntentClassifier)
@@ -53,6 +56,21 @@ def classify_intent(state: State):
     ])
 
     return {'message_intent': result.message_intent}
+
+
+def accept_coding(state: State):
+    user_prompt = state['messages'][-1].content
+    decision = interrupt(f'About to run Claude Code with request: \n\n{user_prompt}\n\nApprove?')
+
+    text = str(decision).strip().lower()
+
+    if text in ['y', 'yes', 'approve', 'ok']:
+        return {}
+
+    if text in ['n', 'no', 'deny', 'cancel']:
+        return {'messages': [{'role': 'assistant', 'content':'Request denies by the user.'}], 'next_node': 'denied'}
+
+    return {'messages': [{'role':'user', 'content': text}]}
 
 
 def prompt_llm_chat(state: State):
@@ -97,10 +115,12 @@ graph_builder.add_node('classifier', classify_intent)
 graph_builder.add_node('chat_agent', prompt_llm_chat)
 graph_builder.add_node('rag_agent', prompt_llm_rag)
 graph_builder.add_node('coding_agent', prompt_llm_code)
+graph_builder.add_node('accept_coding', accept_coding)
 
 graph_builder.add_edge(START, 'classifier')
+graph_builder.add_conditional_edges('accept_coding', lambda state: 'end' if state.get('next_node') == 'denied' else 'coding_agent')
 graph_builder.add_conditional_edges('classifier',
-                                    lambda state: state['message_intent'], {'chat': 'chat_agent', 'knowledge': 'rag_agent', 'code':'coding_agent'})
+                                    lambda state: state['message_intent'], {'chat': 'chat_agent', 'knowledge': 'rag_agent', 'code':'accept_coding'})
 
 
 graph_builder.add_edge('chat_agent', END)
@@ -115,6 +135,11 @@ config = {'configurable': {'thread_id': uuid.uuid4()}}
 while True:
     user_message = input('Enter message: ')
     result = graph.invoke({'messages': [{'role':'user', 'content':user_message}]}, config=config)
+
+    while '__interrupt__' in result:
+        prompt = result['__interrupt__'][0].value
+        decision = input(f'{prompt}\n> ')
+        result = graph.invoke(Command(resume=decision), config=config)
 
     print(result['messages'][-1].content)
 
